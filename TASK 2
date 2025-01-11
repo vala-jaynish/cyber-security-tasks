@@ -1,0 +1,53 @@
+from PIL import Image
+import random
+
+def encrypt_image(input_image_path, output_image_path, key):
+    image = Image.open(input_image_path)
+    pixels = list(image.getdata())
+    width, height = image.size
+
+    random.seed(key)
+    encrypted_pixels = pixels[:]
+    random.shuffle(encrypted_pixels)
+
+    encrypted_image = Image.new(image.mode, (width, height))
+    encrypted_image.putdata(encrypted_pixels)
+    encrypted_image.save(output_image_path)
+    print(f"Image encrypted and saved as {output_image_path}")
+
+def decrypt_image(encrypted_image_path, output_image_path, key):
+    encrypted_image = Image.open(encrypted_image_path)
+    encrypted_pixels = list(encrypted_image.getdata())
+    width, height = encrypted_image.size
+
+    random.seed(key)
+    random_pixels_indices = list(range(len(encrypted_pixels)))
+    random.shuffle(random_pixels_indices)
+
+    decrypted_pixels = [None] * len(encrypted_pixels)
+    for i, pixel_index in enumerate(random_pixels_indices):
+        decrypted_pixels[pixel_index] = encrypted_pixels[i]
+
+    decrypted_image = Image.new(encrypted_image.mode, (width, height))
+    decrypted_image.putdata(decrypted_pixels)
+    decrypted_image.save(output_image_path)
+    print(f"Image decrypted and saved as {output_image_path}")
+
+def main():
+    print("Image Encryption Tool")
+    choice = input("Do you want to (e)ncrypt or (d)ecrypt? ")
+    if choice.lower() not in ['e', 'd']:
+        print("Invalid choice. Please select 'e' for encryption or 'd' for decryption.")
+        return
+
+    input_image_path = input("Enter the path of the input image: ")
+    output_image_path = input("Enter the path of the output image: ")
+    key = input("Enter the encryption/decryption key: ")
+
+    if choice.lower() == 'e':
+        encrypt_image(input_image_path, output_image_path, key)
+    else:
+        decrypt_image(input_image_path, output_image_path, key)
+
+if __name__ == "__main__":
+    main()
