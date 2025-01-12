@@ -1,0 +1,70 @@
+import re
+
+def assess_password_strength(password):
+    strength = 0
+    feedback = []
+
+    # Criteria for strong password
+    length_criteria = len(password) >= 8
+    uppercase_criteria = bool(re.search(r'[A-Z]', password))
+    lowercase_criteria = bool(re.search(r'[a-z]', password))
+    number_criteria = bool(re.search(r'[0-9]', password))
+    special_char_criteria = bool(re.search(r'[!@#$%^&*(),.?":{}|<>]', password))
+
+    # Length criteria
+    if length_criteria:
+        strength += 1
+    else:
+        feedback.append("Password should be at least 8 characters long.")
+
+    # Uppercase criteria
+    if uppercase_criteria:
+        strength += 1
+    else:
+        feedback.append("Password should include at least one uppercase letter.")
+
+    # Lowercase criteria
+    if lowercase_criteria:
+        strength += 1
+    else:
+        feedback.append("Password should include at least one lowercase letter.")
+
+    # Number criteria
+    if number_criteria:
+        strength += 1
+    else:
+        feedback.append("Password should include at least one number.")
+
+    # Special character criteria
+    if special_char_criteria:
+        strength += 1
+    else:
+        feedback.append("Password should include at least one special character.")
+
+    # Determine the strength message
+    if strength == 5:
+        strength_message = "Very Strong"
+    elif strength == 4:
+        strength_message = "Strong"
+    elif strength == 3:
+        strength_message = "Moderate"
+    elif strength == 2:
+        strength_message = "Weak"
+    else:
+        strength_message = "Very Weak"
+
+    return strength_message, feedback
+
+def main():
+    print("Password Strength Assessment Tool")
+    password = input("Enter the password to assess: ")
+    strength, feedback = assess_password_strength(password)
+
+    print(f"Password Strength: {strength}")
+    if feedback:
+        print("Feedback:")
+        for item in feedback:
+            print(f"- {item}")
+
+if __name__ == "__main__":
+    main()
